@@ -1,0 +1,24 @@
+{% extends "partials/base.html" %}
+{% block body %}
+
+{% load crispy_forms_tags %}
+{% if form != none %}
+<div class="row my-4 w-100">
+    <div class="col-md-6 offset-md-3">
+        <div class="border p-3 bg-white">
+            <h4>Upload</h4>
+            <hr>
+            <form method="post" action= {% url "index" %}  enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <input class='btn btn-success' type='submit' value='ADD'>
+            </form>
+        </div>
+    </div>
+</div>
+{%else %}
+{% include "dashboard/luckySheet.html" %}
+{%endif%}
+
+{% endblock body %}
+
