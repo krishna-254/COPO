@@ -31,15 +31,15 @@ class CourseOutcome(models.Model):
     per3 = models.IntegerField()
     per4 = models.IntegerField()
     
-choise=(
-    ('Throry','Throry'),
+choice=(
+    ('Theory','Theory'),
     ('Practical','Practical'),
 )
 
 class CalculateExcel(models.Model):
     userId = models.ForeignKey(settings.AUTH_USER_MODEL , on_delete=models.CASCADE, default = 1)
     subject = models.CharField(max_length = 20)
-    type = models.CharField(max_length = 40,choices = choise)
+    type = models.CharField(max_length = 40,choices = choice)
     semester = models.IntegerField()
     attainment = models.ForeignKey(Attainment, on_delete = models.CASCADE)
     courseOutCome = models.ForeignKey(CourseOutcome, on_delete = models.CASCADE)

@@ -1,20 +1,15 @@
-{% extends 'partials/base.html' %}
+{% extends "partials/base.html" %}
 {% block title %}Logout Page{% endblock %}
 {% load crispy_forms_tags %}
 
 {% block body %}
-<div class="row my-4">
-    <div class="col-md-6 offset-md-3">
-        <div class="border p-3 bg-white">
-            <h4>Logout Page</h4>
-            <hr>
-            <div class="alert alert-info">
-                <h5>You have been logged out</h5>
-            </div>
-            <a href="{% url 'user-login' %}">Login</a>
+<div class="d-flex justify-content-center mt-5">
+    <div class="card shadow-sm p-4 text-center rounded-4 bg-dark" style="max-width: 400px; width: 100%;">
+        <h4 class="text-danger fw-bold">Logout</h4>
+        <div class="alert alert-info mt-3">
+            <h5 class="mb-0">You have been logged out.</h5>
         </div>
+        <a class="btn btn-primary mt-2 px-5" href="{% url 'user-login' %}">Login</a>
     </div>
 </div>
-
-
 {% endblock %}

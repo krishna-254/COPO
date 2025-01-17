@@ -1,96 +1,140 @@
 {% load static %}
-<link rel='stylesheet' href="{% static 'plugins/css/pluginsCss.css' %}" />
-<link rel='stylesheet' href="{% static 'plugins/plugins.css' %}" />
-<link rel='stylesheet' href="{% static 'css/luckysheet.css'%}" />
-<link rel='stylesheet' href="{% static 'assets/iconfont/iconfont.css'%}" />
-<script src="{% static 'plugin.js'%}"></script>
-<script src="{% static 'lucky.umd.js'%}"></script>
+<link rel="stylesheet" href="{% static 'plugins/css/pluginsCss.css' %}" />
+<link rel="stylesheet" href="{% static 'plugins/plugins.css' %}" />
+<link rel="stylesheet" href="{% static 'css/luckysheet.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/iconfont/iconfont.css' %}" />
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+/>
+
+<script src="{% static 'plugin.js' %}"></script>
+<script src="{% static 'lucky.umd.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/luckyexcel/dist/luckyexcel.umd.js"></script>
 
-<a class="btn btn-success" href="#" id="download">Download</a>
 
-<div id="lucky-mask-demo" style="position: absolute;z-index: 1000000;left: 0px;top: 0px;bottom: 0px;right: 0px; background: rgba(255, 255, 255, 0.8); text-align: center;font-size: 40px;align-items:center;justify-content: center;display: none;">Downloading</div>
-<p style="text-align:center;">
-<div id="luckysheet" style="margin:0px;padding:0px;position:absolute;width:100%;left: 0px;top: 150px;bottom: 0px;outline: none;"></div>
-<script src="luckyexcel.umd.js"></script>
+<div
+  class="container-fluid"
+  style=" padding: 10px; min-height: 100vh"
+>
 
-<script data-excel="{{excel_data}}">
-    function handleExcelFile() {
-        let data = document.currentScript.dataset;
-        try{
-        console.log(data.excel)
-        let intArr = JSON.parse(data.excel);
-        let uint8 = new Uint8Array(intArr);
-        let ba = new Uint8Array(data.excel)
-        console.log(uint8)
-        //let excel = new Blob([data.excel],{type :"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
-        let A = new File([uint8],"A.xlsx",{type :"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
-        //let final = excel
-        var down = document.getElementById("download");
-        down.href = window.URL.createObjectURL(A);
-        down.download = 'A.xlsx';
-        
+  <div id="lucky-mask-demo" class="mask" style="display: none">
+    <i class="fas fa-spinner fa-spin"></i> Downloading...
+  </div>
 
-        console.log("A");
-                console.log("A")
-                LuckyExcel.transformExcelToLucky(A, function(exportJson, luckysheetfile){
-                    console.log("A")     
-                    if(exportJson.sheets==null || exportJson.sheets.length==0){
-                        alert("Failed to read the content of the excel file, currently does not support xls files!");
-                        return;
-                    }
-                    window.luckysheet.destroy();
-                    
-                    window.luckysheet.create({
-                        container: 'luckysheet', //luckysheet is the container id
-                        showinfobar:false,
-                        data:exportJson.sheets,
-                        title:exportJson.info.name,
-                        userInfo:exportJson.info.name.creator
-                    });
-                    console.log("A")
-                });
-                // Handle the blob as needed, e.g., use it with LuckySheet
-                // Example: luckysheet.create({ container: 'luckysheet', data: blob });
-        //    })
-        //    .catch(error => console.error('Error fetching Excel file:', error));
-       
+  <div class="text-center">
+    <a class="btn btn-lg btn-success" href="#" id="download">
+      <i class="fas fa-download"></i> Download Excel
+    </a>
+  </div>
+
+
+  <div
+    id="luckysheet"
+    style="
+      margin: 0px;
+      padding: 0px;
+      position: absolute;
+      width: 100%;
+      left: 0px;
+      top: 130px;
+      bottom: 0px;
+      outline: none;
+    "
+  ></div>
+</div>
+
+<script data-excel="{{ excel_data }}">
+  function handleExcelFile() {
+    let data = document.currentScript.dataset;
+    try {
+      // Parse the excel data passed from Django
+      console.log("Received Excel Data:", data.excel);
+      let intArr = JSON.parse(data.excel);
+      let uint8 = new Uint8Array(intArr);
+      let A = new File([uint8], "A.xlsx", {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      // Create download link
+      let down = document.getElementById("download");
+      down.href = window.URL.createObjectURL(A);
+      down.download = "A.xlsx";
+
+      // Transform Excel data to LuckySheet format
+      LuckyExcel.transformExcelToLucky(
+        A,
+        function (exportJson, luckysheetfile) {
+          if (exportJson.sheets == null || exportJson.sheets.length == 0) {
+            alert(
+              "Failed to read the content of the excel file, currently does not support xls files!"
+            );
+            return;
+          }
+
+          window.luckysheet.destroy();
+
+          window.luckysheet.create({
+            container: "luckysheet", //luckysheet is the container id
+            showinfobar: false,
+            data: exportJson.sheets,
+            title: exportJson.info.name,
+            userInfo: exportJson.info.name.creator,
+          });
         }
-        catch(err){
-            var down = document.getElementById("download");
-            down.href = window.URL.createObjectURL(A);
-            down.download = 'A.xlsx';
-            window.luckysheet.create({
-                container: 'luckysheet', //luckysheet is the container id
-            });
-        }
+      );
+    } catch (err) {
+      // Fallback if parsing or transformation fails
+      console.error("Error during file processing:", err);
+      var down = document.getElementById("download");
+      down.href = window.URL.createObjectURL(A);
+      down.download = "A.xlsx";
+      window.luckysheet.create({ container: "luckysheet" });
     }
+  }
 
-    // Call the function when needed
-    handleExcelFile();
-    /*
-    window.onload = () =>{
-        let data = document.currentScript.dataset;
-        let excel = data.excel_data;
-        let upload = document.getElementById("Luckyexcel-demo-file");
-        let mask = document.getElementById("lucky-mask-demo");
-        LuckyExcel.transformExcelToLucky(excel, function(exportJson, luckysheetfile){
-                            
-            if(exportJson.sheets==null || exportJson.sheets.length==0){
-                alert("Failed to read the content of the excel file, currently does not support xls files!");
-                return;
-            }
-            window.luckysheet.destroy();
-            
-            window.luckysheet.create({
-                container: 'luckysheet', //luckysheet is the container id
-                showinfobar:false,
-                data:exportJson.sheets,
-                title:exportJson.info.name,
-                userInfo:exportJson.info.name.creator
-            });
-        });
-    }
-    */
-
+  // Call the function immediately
+  handleExcelFile();
 </script>
+
+<style>
+  .mask {
+    position: absolute;
+    z-index: 1000000;
+    left: 0px;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    background: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    font-size: 40px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+  }
+
+  .btn-success {
+    background-color: #28a745;
+    color: white;
+    font-size: 18px;
+    padding: 10px ;
+    border-radius: 5px;
+    text-decoration: none;
+  }
+
+  .btn-success:hover {
+    background-color: #218838;
+    color: white;
+  }
+
+  #luckysheet {
+    margin: 0px;
+    padding: 0px;
+    position: absolute;
+    width: 100%;
+    left: 0px;
+    top: 150px;
+    bottom: 0px;
+    outline: none;
+  }
+</style>
