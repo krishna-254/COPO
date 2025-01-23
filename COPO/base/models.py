@@ -55,6 +55,7 @@ class Teacher(models.Model):
         ('Teaching Professor', 'Teaching Professor'),
         ('Admin', 'Admin'),
     ]
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='teacher_profile')
     teacher_id = models.CharField(max_length=10, unique=True)
     name = models.CharField(max_length=100)
     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES)
