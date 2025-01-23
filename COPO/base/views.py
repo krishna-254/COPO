@@ -15,6 +15,8 @@ def index(request):
         form_t = ExcelForm(request.POST,request.FILES,initial={'userId':request.user})
         co = request.POST['courseOutCome']
         at = request.POST['attainment']
+        type1 = request.POST['type']
+        
         
         print(co,at)
         
@@ -41,7 +43,7 @@ def index(request):
         print(AttainmentT,CourseOutcomeT)
         if form_t.is_valid():
             in_file = request.FILES['file']
-            out_file, name = cal(in_file,CourseOutcomeT,AttainmentT)
+            out_file, name = cal(in_file,CourseOutcomeT,AttainmentT,type1)
             print(name)
             obj = form_t.save(commit=False)
             obj.userId = request.user

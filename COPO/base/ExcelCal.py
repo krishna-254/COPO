@@ -280,7 +280,7 @@ class ExcelCal:
     #---------------------------------------------------------------------------------------------------------------------------
 
     def ExpAttainment(self):
-        #global wb,sheet,h,row_offset
+        global wb,sheet,h,row_offset
         self.row_offset=9
         self.h = list()
         for row in sheet.iter_rows(min_row=self.row_offset-1,
@@ -293,7 +293,7 @@ class ExcelCal:
         self.COtable1(len(sheet['A'])+2,2,'A')
         self.attainmentLevel1(len(sheet['B'])+2,2,'E')
     def LabUniversity(self):
-        #global wb,sheet,h,row_offset
+        global wb,sheet,h,row_offset
         self.row_offset=8
         self.h =["ALL"]
         self.sheet["F{}".format(self.row_offset-1)] = "%"
@@ -303,7 +303,7 @@ class ExcelCal:
 
     #------------------------
 
-def cal(in_file,CourseOutcomeT,AttainmentT):
+def cal(in_file,CourseOutcomeT,AttainmentT,type1):
     global wb,sheet,h,temp,per1,w
     per1 = CourseOutcomeT
     w = AttainmentT
@@ -321,8 +321,8 @@ def cal(in_file,CourseOutcomeT,AttainmentT):
     #--------------------------------------------------------
     #--------------------------------------------------------
     
-    x = 'y'
-    if(x=='y'):
+    x = type1
+    if(x=="Theory"):
         Ec.sheet = Ec.wb['IA-1']
         Ec.IA()
         Ec.sheet = Ec.wb['IA-2']
